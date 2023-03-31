@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('quotes/quotes.service', () => ({
   getQuotesByUser: vi.fn(),
+  getAllQuotes: vi.fn(),
   createQuote: vi.fn(),
   getQuoteById: vi.fn(),
   deleteQuote: vi.fn()
@@ -61,6 +62,43 @@ describe('quotes.controller', () => {
       await QuoteController.getAllQuotes(request, response, next)
 
       expect(vi.mocked(QuoteService.getQuotesByUser)).toHaveBeenCalledWith(1)
+      expect(response.json).toHaveBeenCalledWith(quotes)
+    })
+
+    it('should throw an error if no session userId', async () => {
+      vi.mocked(QuoteService.getQuotesByUser).mockResolvedValueOnce([])
+      expect(
+        QuoteController.getAllQuotes(request, response, next)
+      ).rejects.toThrowError()
+    })
+  })
+
+  describe('getAllQuotesGlobal', () => {
+    it('should respond to the request for all quotes, and include user info in the response', async () => {
+      request['session'] = { userId: 1 }
+      const quotes = [
+        {
+          id: 1,
+          userId: 1,
+          text: 'Hello world',
+          user: {
+            username: 'some-user'
+          },
+          tags: [
+            {
+              id: 1,
+              color: '#000000',
+              name: 'tag'
+            }
+          ]
+        }
+      ]
+
+      vi.mocked(QuoteService.getAllQuotes).mockResolvedValueOnce(quotes)
+
+      await QuoteController.getAllQuotesGlobal(request, response, next)
+
+      expect(vi.mocked(QuoteService.getAllQuotes)).toHaveBeenCalledOnce()
       expect(response.json).toHaveBeenCalledWith(quotes)
     })
 

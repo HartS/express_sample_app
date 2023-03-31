@@ -19,6 +19,18 @@ export const createQuote = async (
   })
 }
 
+export const getAllQuotes = async () => {
+  return await prisma.quote.findMany({
+    include: {
+      user: {
+        select: {
+          username: true
+        }
+      }
+    }
+  })
+}
+
 export const getQuotesByUser = async (id: number) => {
   return await prisma.quote.findMany({
     where: { userId: id },

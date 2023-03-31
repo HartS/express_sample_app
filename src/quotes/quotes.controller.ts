@@ -9,6 +9,11 @@ export const getAllQuotes: RequestHandler = async (req, res) => {
   res.json(quotes)
 }
 
+export const getAllQuotesGlobal: RequestHandler = async (req, res) => {
+  const quotes = await QuoteService.getAllQuotes()
+  res.json(quotes)
+}
+
 export const createQuote: RequestHandler = async (
   req: Request<unknown, unknown, CreateQuoteSchema>,
   res

@@ -6,6 +6,7 @@ import { validate } from 'lib/middlewares'
 const router = Router()
 
 router.get('/', QuoteController.getAllQuotes)
+router.get('/all', QuoteController.getAllQuotesGlobal)
 router.post('/', validate(CreateQuoteSchema), QuoteController.createQuote)
 router.delete('/:id', validate(DeleteQuoteSchema), QuoteController.deleteQuote)
 
